@@ -7,7 +7,7 @@ const messageDiv = document.querySelector('.message');
 const cells = Array.from(document.getElementsByClassName('cell'));
 
 let players = ["", ""];
-let currentPlayer = 0; // 0 = player 1, 1 = player 2
+let currentPlayer = 0; // 0 = player1, 1 = player2
 let board = ["", "", "", "", "", "", "", "", ""];
 let gameActive = false;
 
@@ -24,9 +24,9 @@ submitBtn.addEventListener('click', function() {
 
   players = [p1, p2];
   setupDiv.style.display = 'none';
-  gameDiv.style.display = 'block';
+  gameDiv.classList.remove('hidden');
 
-  // Ensure board visible before Cypress click
+  // Ensure grid is rendered before Cypress interacts
   setTimeout(() => {
     currentPlayer = 0;
     board = Array(9).fill("");
@@ -37,7 +37,7 @@ submitBtn.addEventListener('click', function() {
       cell.classList.remove('winning');
       cell.addEventListener('click', handleCellClick, { once: true });
     });
-  }, 10);
+  }, 50);
 });
 
 function handleCellClick(e) {
@@ -45,7 +45,6 @@ function handleCellClick(e) {
   const idx = parseInt(e.target.id, 10) - 1;
   if (board[idx] !== "") return;
 
-  // Use lowercase x/o for Cypress compatibility
   board[idx] = currentPlayer === 0 ? 'x' : 'o';
   e.target.textContent = board[idx];
 

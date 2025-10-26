@@ -43,6 +43,12 @@ button {
   font-weight: bold;
 }
 
+/* Visibility fix for Cypress */
+.hidden {
+  visibility: hidden;
+  height: auto;
+}
+
 .board {
   display: grid;
   grid-template-columns: repeat(3, 80px);
