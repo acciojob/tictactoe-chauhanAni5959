@@ -7,7 +7,7 @@ const messageDiv = document.querySelector('.message');
 const cells = Array.from(document.getElementsByClassName('cell'));
 
 let players = ["", ""];
-let currentPlayer = 0; // 0: player 1, 1: player 2
+let currentPlayer = 0; // 0 = player 1, 1 = player 2
 let board = ["", "", "", "", "", "", "", "", ""];
 let gameActive = false;
 
@@ -21,10 +21,12 @@ submitBtn.addEventListener('click', function() {
   const p1 = player1Input.value.trim();
   const p2 = player2Input.value.trim();
   if (p1 === "" || p2 === "") return;
+
   players = [p1, p2];
   setupDiv.style.display = 'none';
   gameDiv.style.display = 'block';
-  // Make sure cells are visible before allowing Cypress to click
+
+  // Ensure board visible before Cypress click
   setTimeout(() => {
     currentPlayer = 0;
     board = Array(9).fill("");
@@ -42,9 +44,11 @@ function handleCellClick(e) {
   if (!gameActive) return;
   const idx = parseInt(e.target.id, 10) - 1;
   if (board[idx] !== "") return;
-  // Use lower case for test compatibility
+
+  // Use lowercase x/o for Cypress compatibility
   board[idx] = currentPlayer === 0 ? 'x' : 'o';
   e.target.textContent = board[idx];
+
   const winCombo = getWinCombo();
   if (winCombo) {
     winCombo.forEach(i => cells[i].classList.add('winning'));
@@ -52,11 +56,13 @@ function handleCellClick(e) {
     gameActive = false;
     return;
   }
+
   if (board.every(cell => cell !== "")) {
     messageDiv.textContent = "It's a draw!";
     gameActive = false;
     return;
   }
+
   currentPlayer = 1 - currentPlayer;
   messageDiv.textContent = `${players[currentPlayer]}, you're up`;
 }
@@ -64,11 +70,7 @@ function handleCellClick(e) {
 function getWinCombo() {
   for (let combo of winCombos) {
     const [a, b, c] = combo;
-    if (
-      board[a] &&
-      board[a] === board[b] &&
-      board[a] === board[c]
-    ) {
+    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
       return combo;
     }
   }
