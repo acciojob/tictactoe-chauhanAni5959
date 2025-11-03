@@ -1,77 +1,74 @@
-const setupDiv = document.getElementById('setup');
+const nameForm = document.getElementById('name-form');
 const gameDiv = document.getElementById('game');
 const submitBtn = document.getElementById('submit');
-const player1Input = document.getElementById('player1');
-const player2Input = document.getElementById('player2');
 const messageDiv = document.querySelector('.message');
-const cells = Array.from(document.getElementsByClassName('cell'));
+const cells = document.querySelectorAll('.cell');
 
-let players = ["", ""];
-let currentPlayer = 0; // 0 = player1, 1 = player2
-let board = ["", "", "", "", "", "", "", "", ""];
+let players = [];
+let currentPlayer = 0; // 0 = Player1, 1 = Player2
+let symbols = ['x', 'o'];
+let board = ['', '', '', '', '', '', '', '', ''];
 let gameActive = false;
 
-const winCombos = [
-  [0,1,2], [3,4,5], [6,7,8], // rows
-  [0,3,6], [1,4,7], [2,5,8], // columns
-  [0,4,8], [2,4,6]           // diagonals
-];
+submitBtn.addEventListener('click', function(e) {
+  e.preventDefault();
 
-submitBtn.addEventListener('click', function() {
-  const p1 = player1Input.value.trim();
-  const p2 = player2Input.value.trim();
-  if (p1 === "" || p2 === "") return;
+  const player1 = document.getElementById('player1').value.trim();
+  const player2 = document.getElementById('player2').value.trim();
 
-  players = [p1, p2];
-  setupDiv.style.display = 'none';
-  gameDiv.classList.remove('hidden');
+  if (!player1 || !player2) {
+    alert('Please enter names for both players');
+    return;
+  }
+  players = [player1, player2];
+  board = ['', '', '', '', '', '', '', '', ''];
+  currentPlayer = 0;
+  gameActive = true;
 
-  // Ensure grid is rendered before Cypress interacts
-  setTimeout(() => {
-    currentPlayer = 0;
-    board = Array(9).fill("");
-    gameActive = true;
-    messageDiv.textContent = `${players[currentPlayer]}, you're up`;
-    cells.forEach(cell => {
-      cell.textContent = "";
-      cell.classList.remove('winning');
-      cell.addEventListener('click', handleCellClick, { once: true });
-    });
-  }, 50);
+  nameForm.style.display = 'none';
+  gameDiv.style.display = 'block';
+
+  // Reset cells
+  cells.forEach(cell => cell.textContent = '');
+
+  setMessage(`${players[currentPlayer]}, you're up`);
 });
 
-function handleCellClick(e) {
-  if (!gameActive) return;
-  const idx = parseInt(e.target.id, 10) - 1;
-  if (board[idx] !== "") return;
+cells.forEach(cell => {
+  cell.addEventListener('click', function () {
+    const idx = parseInt(this.id) - 1;
+    if (!gameActive || board[idx]) return;
+    board[idx] = symbols[currentPlayer];
+    this.textContent = symbols[currentPlayer];
 
-  board[idx] = currentPlayer === 0 ? 'x' : 'o';
-  e.target.textContent = board[idx];
+    if (checkWinner()) {
+      setMessage(`${players[currentPlayer]} congratulations you won!`);
+      gameActive = false;
+      return;
+    }
 
-  const winCombo = getWinCombo();
-  if (winCombo) {
-    winCombo.forEach(i => cells[i].classList.add('winning'));
-    messageDiv.textContent = `${players[currentPlayer]} congratulations you won!`;
-    gameActive = false;
-    return;
-  }
+    if (board.every(cell => cell !== '')) {
+      setMessage('Draw! Try again.');
+      gameActive = false;
+      return;
+    }
 
-  if (board.every(cell => cell !== "")) {
-    messageDiv.textContent = "It's a draw!";
-    gameActive = false;
-    return;
-  }
+    currentPlayer = 1 - currentPlayer;
+    setMessage(`${players[currentPlayer]}, you're up`);
+  });
+});
 
-  currentPlayer = 1 - currentPlayer;
-  messageDiv.textContent = `${players[currentPlayer]}, you're up`;
+function setMessage(msg) {
+  messageDiv.textContent = msg;
 }
 
-function getWinCombo() {
-  for (let combo of winCombos) {
-    const [a, b, c] = combo;
-    if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-      return combo;
-    }
-  }
-  return null;
+function checkWinner() {
+  const lines = [
+    [0,1,2], [3,4,5], [6,7,8],
+    [0,3,6], [1,4,7], [2,5,8],
+    [0,4,8], [2,4,6]
+  ];
+  return lines.some(pattern =>
+    pattern.every(idx => board[idx] === symbols[currentPlayer])
+  );
 }
