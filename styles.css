@@ -1,91 +1,54 @@
 body {
   font-family: Arial, sans-serif;
-  text-align: center;
-  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background: #f4f4f4;
 }
 
 .container {
-  margin: 50px auto;
-  max-width: 400px;
+  text-align: center;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  width: 320px;
 }
 
-h1 {
-  font-family: 'Pacifico', cursive, sans-serif;
-  margin-bottom: 24px;
-  font-size: 2.5em;
+#board {
+  display: none;
+  margin-top: 20px;
 }
 
-label {
-  display: block;
-  margin: 10px 0 4px 45px;
-  text-align: left;
-  font-size: 1.1em;
-}
-
-input[type="text"] {
-  width: 250px;
-  padding: 8px 16px;
-  margin-bottom: 8px;
-  font-size: 1.1em;
-  border: 2px solid #333;
-  border-radius: 2px;
-}
-
-button {
-  font-size: 1.3em;
-  padding: 10px 60px;
-  border: 2px solid #111;
-  border-radius: 8px;
-  background: #fff;
-  cursor: pointer;
-  margin-top: 16px;
-}
-
-.board {
+.grid {
   display: grid;
   grid-template-columns: repeat(3, 80px);
-  grid-template-rows: repeat(3, 80px);
-  gap: 2px;
+  gap: 5px;
   justify-content: center;
-  margin: 35px 0 0 0;
 }
 
 .cell {
-  background: #fdaeb7;
-  border: 2px solid #111;
+  width: 80px;
+  height: 80px;
+  background: pink;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 2.3em;
+  font-size: 2rem;
   cursor: pointer;
-  height: 80px;
-  width: 80px;
-  user-select: none;
-  transition: background 0.2s;
-}
-
-.cell:hover {
-  background: #ffccd5;
+  border-radius: 5px;
 }
 
 .message {
-  min-height: 24px;
-  font-size: 1.2em;
+  margin-top: 10px;
+  font-size: 1.2rem;
   font-weight: bold;
-  margin: 16px 0 4px 0;
 }
 
-@media (max-width: 480px) {
-  .board {
-    grid-template-columns: repeat(3, 60px);
-    grid-template-rows: repeat(3, 60px);
-  }
-  .cell {
-    width: 60px;
-    height: 60px;
-    font-size: 1.4em;
-  }
-  .container {
-    max-width: 320px;
-  }
+
+.win {
+  background: purple !important;
+  color: white;
 }
